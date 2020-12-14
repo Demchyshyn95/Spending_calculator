@@ -1,5 +1,6 @@
 import React from "react";
 import {useForm} from "react-hook-form";
+import './create_item.css'
 
 
 const CreateItem = ({ addNew }) => {
