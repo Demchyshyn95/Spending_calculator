@@ -2,77 +2,87 @@ import {useSelector} from "react-redux";
 import Item from "../Item/Item";
 import {currencyService} from "../../Services";
 import {useEffect, useState} from "react";
+import s from './listItems.module.css'
+import ResetAllExpenses from "../ResetAllExpenses/ResetAllExpenses";
 
 const ListItems = () => {
-    const expenses = useSelector(({expenses}) => expenses);
-    const [totalPln, setTotalPln] = useState();
+
+    const expenses = useSelector(({ expenses }) => expenses);
+    const [totalPln, setTotalPln] = useState(0);
     const [showTotal, setShowTotal] = useState(true);
 
-
     const obj = Object.entries(expenses);
-
     const service = new currencyService();
 
-    const get = async () => {
+    const getTotalPln = async () => {
         setShowTotal(!showTotal);
+        let suma = 0;
 
         for (let key in expenses) {
+
             const obj = expenses[key];
             const isArray = Array.isArray(obj);
             if (isArray) {
-                obj.forEach(el => {
-                        const {money} = el;
-                        const {valuta} = el;
-                        getTotalPln(money, valuta)
-                    }
-                )
+
+                for (const el of obj) {
+                    const { money } = el;
+                    const { valuta } = el;
+                    suma += (+await getPln(money, valuta));
+                }
                 continue;
             }
-            const {money} = obj;
-            const {valuta} = obj;
-            getTotalPln(money, valuta,);
+            const { money } = obj;
+            const { valuta } = obj;
+            suma += (+await getPln(money, valuta,));
         }
+        setTotalPln(suma.toFixed(2));
     }
 
-    const getTotalPln = async (money, valuta) => {
-
+    const getPln = async (money, valuta) => {
         const PLN = 'PLN';
+
         if (valuta === PLN) {
-            setTotalPln(totalPln + (+money));
-        return;
+            return money;
         }
-        await setTotalPln(totalPln + (+await service.getEUR(money, valuta).then(res => res)));
+
+        const newPln = await service.getEUR(money, valuta).then(res => res);
+        return newPln;
     }
 
     const resetTotal = () => {
         setShowTotal(!showTotal);
         setTotalPln(0);
-    }
+    };
 
 
     return (
         <div>
-            {obj && obj.map(([key, value], i) => {
+            { expenses && <ResetAllExpenses/> }
+            { obj && obj.map(([key, value]) => {
                 return (
                     <div>
                         <strong>{key}</strong>
-                        <Item value={value} key={i}/>
+                        <Item value={value} key={key}/>
                         <hr/>
                     </div>
                 );
-            })}
-            <div>{
-                showTotal
-                    ? <button className="btn-warning" onClick={get}>TotalPLN</button>
-                    : <div>
-                        <em>TOTAL_PLN : {totalPln}</em>
-                        <button type="button" className="close" data-dismiss="modal"
-                                onClick={resetTotal} aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-            }
-
+            }) }
+            <div>
+                {
+                    expenses ?
+                        (
+                            showTotal
+                                ? <button className="btn-warning" onClick={ getTotalPln }>TotalPLN</button>
+                                : <div>
+                                    <em>total PLN : { totalPln }</em>
+                                    <button type="button" className="close" data-dismiss="modal"
+                                            onClick={resetTotal} aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                        )
+                        : ''
+                }
             </div>
         </div>
     )

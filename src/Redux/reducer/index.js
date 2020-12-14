@@ -1,7 +1,7 @@
-import {ADD_NEW_EXPENSE, REMOVE_EXPENSE_WITH_DATE} from "../actions_types";
+import {ADD_NEW_EXPENSE, REMOVE_EXPENSE_WITH_DATE, RESET_ALL_EXPENSES} from "../actions_types";
 
 const initialState = {
-    expenses: {}
+    expenses: ''
 }
 
 
@@ -49,6 +49,11 @@ export const reducer = (state = initialState, actions) => {
             }
 
         }
+
+        case RESET_ALL_EXPENSES: {
+            return {...state, expenses: ''}
+        }
+
         default:
             return state;
     }

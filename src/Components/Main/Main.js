@@ -1,8 +1,8 @@
-import Form from "../CreatItem/Form";
 import {useDispatch} from "react-redux";
 import {addNewExpense, remove_expense_with_date } from "../../Redux/actions";
 import RemoveItem from "../RemoveItem/RemoveItem";
 import ListItems from "../ListItems/ListItems";
+import CreateItem from "../CreatItem/CreateItem";
 
 
 const Main = () => {
@@ -18,10 +18,13 @@ const Main = () => {
         dispatch(remove_expense_with_date(data))
     }
 
+
     return (
-        <div>
-            <Form addNew={addNew}/>
-            <RemoveItem removeExpenseWithDate={removeExpenseWithDate}/>
+        <div className="w-75">
+            <CreateItem addNew={ addNew }/>
+            <hr/>
+            <RemoveItem removeExpenseWithDate={ removeExpenseWithDate }/>
+            <hr/>
             <ListItems/>
         </div>
     )

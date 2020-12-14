@@ -1,4 +1,4 @@
-const Item = ({value}) => {
+const Item = ({ value }) => {
     const isArray = Array.isArray(value);
 
     return (
