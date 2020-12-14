@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 
 const ListItems = () => {
     const expenses = useSelector(({expenses}) => expenses);
-    const [totalPln, setTotalPln] = useState();
+    const [totalPln, setTotalPln] = useState(0);
     const [showTotal, setShowTotal] = useState(true);
 
 
